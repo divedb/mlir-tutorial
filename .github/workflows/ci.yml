@@ -28,10 +28,11 @@ jobs:
 
       - name: Install LLVM/MLIR
         run: |
+          set -e
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 18
-          sudo apt-get install -y llvm-18-tools mlir-18-tools
+          sudo apt-get install -y llvm-18-dev
 
       - name: Add LLVM to PATH
         run: |
@@ -39,23 +40,42 @@ jobs:
 
       - name: Verify mlir-opt installation
         run: |
-          which mlir-opt-18 || echo "mlir-opt-18 not found in PATH"
-          ls -la /usr/lib/llvm-18/bin/ || echo "LLVM bin directory not found"
+          if ! command -v mlir-opt-18 &> /dev/null; then
+            echo "Error: mlir-opt-18 not found"
+            exit 1
+          fi
+          echo "✓ mlir-opt-18 is available"
+          mlir-opt-18 --version
 
       - name: Validate MLIR files
         run: |
+          set -e
           echo "Validating MLIR examples..."
+          
+          # Check if examples directory exists and contains .mlir files
+          if [ ! -d examples ]; then
+            echo "Error: examples directory not found"
+            exit 1
+          fi
+          
+          MLIR_FILES=$(find examples -name "*.mlir" -type f)
+          if [ -z "$MLIR_FILES" ]; then
+            echo "Error: No .mlir files found in examples directory"
+            exit 1
+          fi
+          
           EXIT_CODE=0
-          for file in $(find examples -name "*.mlir"); do
+          while IFS= read -r file; do
             echo "Checking $file..."
-            if mlir-opt-18 "$file" --verify-diagnostics > /dev/null 2>&1; then
+            if mlir-opt-18 "$file" > /dev/null 2>&1; then
               echo "✓ $file is valid"
             else
-              echo "✗ $file has errors"
-              mlir-opt-18 "$file" --verify-diagnostics || true
+              echo "✗ $file has errors:"
+              mlir-opt-18 "$file" 2>&1 || true
               EXIT_CODE=1
             fi
-          done
+          done <<< "$MLIR_FILES"
+          
           exit $EXIT_CODE
 
   check-structure:
