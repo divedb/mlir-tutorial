@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: '**/*.md'
+
+  validate-mlir:
+    name: Validate MLIR Examples
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install LLVM/MLIR
+        run: |
+          set -e
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18
+          sudo apt-get install -y llvm-18-dev
+
+      - name: Add LLVM to PATH
+        run: |
+          echo "/usr/lib/llvm-18/bin" >> $GITHUB_PATH
+
+      - name: Verify mlir-opt installation
+        run: |
+          if ! command -v mlir-opt-18 &> /dev/null; then
+            echo "Error: mlir-opt-18 not found"
+            exit 1
+          fi
+          echo "✓ mlir-opt-18 is available"
+          mlir-opt-18 --version
+
+      - name: Validate MLIR files
+        run: |
+          set -e
+          echo "Validating MLIR examples..."
+          
+          # Check if examples directory exists and contains .mlir files
+          if [ ! -d examples ]; then
+            echo "Error: examples directory not found"
+            exit 1
+          fi
+          
+          MLIR_FILES=$(find examples -name "*.mlir" -type f)
+          if [ -z "$MLIR_FILES" ]; then
+            echo "Error: No .mlir files found in examples directory"
+            exit 1
+          fi
+          
+          EXIT_CODE=0
+          while IFS= read -r file; do
+            echo "Checking $file..."
+            if mlir-opt-18 "$file" > /dev/null 2>&1; then
+              echo "✓ $file is valid"
+            else
+              echo "✗ $file has errors:"
+              mlir-opt-18 "$file" 2>&1 || true
+              EXIT_CODE=1
+            fi
+          done <<< "$MLIR_FILES"
+          
+          exit $EXIT_CODE
+
+  check-structure:
+    name: Check Repository Structure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify required files
+        run: |
+          echo "Checking for required files..."
+          
+          # Check for essential files
+          test -f README.md || { echo "Missing README.md"; exit 1; }
+          test -f LICENSE || { echo "Missing LICENSE"; exit 1; }
+          test -f CONTRIBUTING.md || { echo "Missing CONTRIBUTING.md"; exit 1; }
+          test -f .gitignore || { echo "Missing .gitignore"; exit 1; }
+          
+          # Check for docs directory
+          test -d docs || { echo "Missing docs directory"; exit 1; }
+          
+          # Check for examples directory
+          test -d examples || { echo "Missing examples directory"; exit 1; }
+          
+          echo "✓ All required files and directories present"
+
+      - name: Check for broken links in README
+        run: |
+          echo "Checking README structure..."
+          grep -q "## What is MLIR?" README.md || { echo "Missing MLIR intro section"; exit 1; }
+          grep -q "## Installation" README.md || { echo "Missing installation section"; exit 1; }
+          grep -q "## Examples" README.md || { echo "Missing examples section"; exit 1; }
+          echo "✓ README structure is valid"
