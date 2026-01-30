@@ -309,8 +309,8 @@ LogicalResult MyOp::verify() {
 ## Next Steps
 
 - Try the [examples](../examples/)
-- Read about [Creating Custom Dialects](custom-dialects.md)
-- Learn about [Passes and Transformations](transformations.md)
+- Read the [MLIR Tutorials](https://mlir.llvm.org/docs/Tutorials/)
+- Learn about [Creating Dialects](https://mlir.llvm.org/docs/DefiningDialects/)
 
 ## References
 

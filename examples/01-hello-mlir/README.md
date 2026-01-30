@@ -23,7 +23,7 @@ func.func @return_constant() -> i32 {
 
 ## Example 2: Function with Arguments
 
-File: `add_function.mlir`
+File: `arithmetic.mlir`
 
 ```mlir
 // Function that adds two integers
@@ -41,7 +41,7 @@ func.func @add(%arg0: i32, %arg1: i32) -> i32 {
 
 ## Example 3: Multiple Operations
 
-File: `compute.mlir`
+File: `arithmetic.mlir`
 
 ```mlir
 // More complex computation
@@ -110,7 +110,7 @@ module {
 
 ## Exercises
 
-1. Modify `add_function.mlir` to compute subtraction instead
+1. Modify the `@add` function in `arithmetic.mlir` to compute subtraction instead
 2. Create a function that computes the average of three numbers (use f32)
 3. Write a function that takes four i32 values and returns their sum
 4. Create a function that computes `(a * b) + (c * d)`
@@ -119,4 +119,4 @@ module {
 
 - Learn about [control flow](../02-custom-dialect/)
 - Explore [transformations](../03-transformations/)
-- Build your own [custom dialect](../../docs/custom-dialects.md)
+- Read the [MLIR Dialect Documentation](https://mlir.llvm.org/docs/Dialects/)

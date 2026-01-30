@@ -1,6 +1,6 @@
-# Custom Dialect Example
+# Control Flow Example
 
-This example demonstrates control flow operations in MLIR.
+This example demonstrates control flow operations in MLIR using the SCF (Structured Control Flow) dialect.
 
 ## Example 1: Conditional (If-Else)
 
@@ -53,7 +53,7 @@ func.func @sum_range(%n: index) -> index {
 
 ## Example 3: While Loop
 
-File: `while_loop.mlir`
+File: `loops.mlir`
 
 ```mlir
 func.func @factorial(%n: i32) -> i32 {
@@ -83,7 +83,7 @@ func.func @factorial(%n: i32) -> i32 {
 
 ## Example 4: Nested Loops
 
-File: `nested_loops.mlir`
+File: `loops.mlir`
 
 ```mlir
 func.func @matrix_sum(%rows: index, %cols: index) -> index {
@@ -107,9 +107,9 @@ func.func @matrix_sum(%rows: index, %cols: index) -> index {
 }
 ```
 
-## Example 5: Switch/Select
+## Example 5: Select
 
-File: `select.mlir`
+File: `conditional.mlir`
 
 ```mlir
 func.func @max(%a: i32, %b: i32) -> i32 {
@@ -174,5 +174,5 @@ mlir-opt loops.mlir \
 ## Next Steps
 
 - Learn about [transformations](../03-transformations/)
-- Explore [affine dialect](../../docs/affine-dialect.md)
-- Understand [memory operations](../../docs/memory-ops.md)
+- Explore the [Affine Dialect Documentation](https://mlir.llvm.org/docs/Dialects/Affine/)
+- Read about [MemRef operations](https://mlir.llvm.org/docs/Dialects/MemRef/)

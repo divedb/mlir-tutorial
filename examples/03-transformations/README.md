@@ -291,9 +291,9 @@ std::unique_ptr<Pass> createMyOptimizationPass() {
 
 ## Next Steps
 
-- Learn about [pattern rewriting](../../docs/pattern-rewriting.md)
-- Explore [custom passes](../../docs/custom-passes.md)
-- Study [dialect conversion](../../docs/dialect-conversion.md)
+- Learn about [pattern rewriting](https://mlir.llvm.org/docs/PatternRewriter/)
+- Explore [custom passes](https://mlir.llvm.org/docs/PassManagement/)
+- Study [dialect conversion](https://mlir.llvm.org/docs/DialectConversion/)
 
 ## References
 
