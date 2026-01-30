@@ -1,0 +1,57 @@
+# Build artifacts
+build/
+*.o
+*.so
+*.a
+*.dylib
+*.exe
+
+# LLVM/MLIR build files
+*.ll
+*.bc
+*.mlir.tmp
+*.inc
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+venv/
+env/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Temporary files
+/tmp/
+*.tmp
+*.bak
+*.log
+
+# Documentation build
+docs/_build/
+site/
+
+# Testing
+.tox/
+.coverage
+htmlcov/
+
+# Operating system
+Thumbs.db
+.Trash-*/
